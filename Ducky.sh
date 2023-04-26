@@ -30,7 +30,7 @@ function downloadDuckyClient {
 }
 
 # Create conf.ini file
-function createConfFile {
+function createAndReadConfFile {
     echo "[Client]" > "/root/Ducky/conf.ini"
     read -p "请输入User值: " user
     echo "User=$user" >> "/root/Ducky/conf.ini"
@@ -38,18 +38,34 @@ function createConfFile {
     echo "Key=$key" >> "/root/Ducky/conf.ini"
     echo "Port=808" >> "/root/Ducky/conf.ini"
     echo "" >> "/root/Ducky/conf.ini"
-    echo "##### 甲骨文账号配置 #####"
+    echo "##### Oracle Cloud账户配置 #####"
 
     echo ""
-    echo "请输入以下信息："
-    read -p "请输入account ID、fingerprint、tenancy、region和key file path（用空格分隔）：" account_id fingerprint tenancy region_name key_file_path
-    echo "user=\"$account_id\"" >> "/root/Ducky/conf.ini"
-    echo "fingerprint=\"$fingerprint\"" >> "/root/Ducky/conf.ini"
-    echo "tenancy=\"$tenancy\"" >> "/root/Ducky/conf.ini"
-    echo "region=\"$region_name\"" >> "/root/Ducky/conf.ini"
-    echo "key_file=\"$key_file_path\"" >> "/root/Ducky/conf.ini"
+    echo -e "\033[33m开始添加Oracle Cloud账户配置...\033[0m"
+
+    while true; do
+        read -p "输入 'done' 完成配置添加，或者输入account ID、fingerprint、tenancy、region和key file path（用空格分隔）： " input
+        if [[ $input == done ]]; then
+            break
+        fi
+        IFS=' ' read -r account_id fingerprint tenancy region_name key_file_path <<< "$input"
+        echo "[$account_id]" >> "/root/Ducky/conf.ini"
+        echo "user='$account_id'" >> "/root/Ducky/conf.ini"
+        echo "fingerprint='$fingerprint'" >> "/root/Ducky/conf.ini"
+        echo "tenancy='$tenancy'" >> "/root/Ducky/conf.ini"
+        echo "region='$region_name'" >> "/root/Ducky/conf.ini"
+        echo "key_file='$key_file_path'" >> "/root/Ducky/conf.ini"
+        echo "" >> "/root/Ducky/conf.ini"
+    done
 
     echo -e "\033[33mconf.ini文件已创建！\033[0m"
+
+    # 从配置文件中获取Oracle Cloud账户相关信息
+    user=$(awk -F= '/^user/ {gsub(/"/,"",$2);print $2}' /root/Ducky/conf.ini)
+    echo "User: $user"
+    echo ""
+
+    awk -F= '/^\[/ {account=$1} /^\[.*$/ {next;} /^user/ {gsub(/"/,"",$2);printf("Account: %s, User: %s\n", account, $2)} /^fingerprint/ {gsub(/"/,"",$2);printf("Fingerprint: %s\n", $2)} /^tenancy/ {gsub(/"/,"",$2);printf("Tenancy: %s\n", $2)} /^region/ {gsub(/"/,"",$2);printf("Region: %s\n", $2)} /^key_file/ {gsub(/"/,"",$2);printf("Key File Path: %s\n\n", $2)}' /root/Ducky/conf.ini
 }
 
 # Display menu
@@ -64,7 +80,7 @@ if [ "$choice" == "1" ]; then
     downloadDuckyClient
 elif [ "$choice" == "2" ]; then
     echo -e "\033[33m您选择了创建自定义的 conf.ini 配置文件\033[0m"
-    createConfFile
+    createAndReadConfFile
 else
     echo "尚未实现此功能！"
 fi
