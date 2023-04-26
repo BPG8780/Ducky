@@ -37,18 +37,20 @@ function createConfFile {
     read -p "请输入Key值: " key
     echo "Key=$key" >> "/root/Ducky/conf.ini"
     echo "Port=808" >> "/root/Ducky/conf.ini"
-    echo "" >> "/root/Ducky/conf.ini
-    echo "##### 甲骨文账号配置 #####" >> "/root/Ducky/conf.ini"
-    read -p "请输入[]中的user值: " jg_user
-    echo "[]" >> "/root/Ducky/conf.ini"
+    echo "" >> "/root/Ducky/conf.ini"
+    echo "##### 甲骨文账号配置 #####"
+
+    read -p "请输入中括号中的内容: " section_name
+    echo "[$section_name]" >> "/root/Ducky/conf.ini"
+    read -p "请输入$section_name中的user值: " jg_user
     echo "user=$jg_user" >> "/root/Ducky/conf.ini"
-    read -p "请输入[]中的fingerprint值: " fingerprint
+    read -p "请输入$section_name中的fingerprint值: " fingerprint
     echo "fingerprint=$fingerprint" >> "/root/Ducky/conf.ini"
-    read -p "请输入[]中的tenancy值: " tenancy
+    read -p "请输入$section_name中的tenancy值: " tenancy
     echo "tenancy=$tenancy" >> "/root/Ducky/conf.ini"
-    read -p "请输入[]中的region值: " region
+    read -p "请输入$section_name中的region值: " region
     echo "region=$region" >> "/root/Ducky/conf.ini"
-    read -p "请输入[]中的key_file值: " key_file
+    read -p "请输入$section_name中的key_file值: " key_file
     echo "key_file=$key_file" >> "/root/Ducky/conf.ini"
 
     echo -e "\033[33mconf.ini文件已创建！\033[0m"
