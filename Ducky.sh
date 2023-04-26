@@ -50,11 +50,11 @@ function createAndReadConfFile {
         fi
         IFS=' ' read -r account_id fingerprint tenancy region_name key_file_path <<< "$input"
         echo "[$account_id]" >> "/root/Ducky/conf.ini"
-        echo "user='$account_id'" >> "/root/Ducky/conf.ini"
-        echo "fingerprint='$fingerprint'" >> "/root/Ducky/conf.ini"
-        echo "tenancy='$tenancy'" >> "/root/Ducky/conf.ini"
-        echo "region='$region_name'" >> "/root/Ducky/conf.ini"
-        echo "key_file='$key_file_path'" >> "/root/Ducky/conf.ini"
+        echo "user=$account_id" >> "/root/Ducky/conf.ini"
+        echo "fingerprint=$fingerprint" >> "/root/Ducky/conf.ini"
+        echo "tenancy=$tenancy" >> "/root/Ducky/conf.ini"
+        echo "region=$region_name" >> "/root/Ducky/conf.ini"
+        echo "key_file=$key_file_path" >> "/root/Ducky/conf.ini"
         echo "" >> "/root/Ducky/conf.ini"
     done
 
@@ -65,7 +65,7 @@ function createAndReadConfFile {
     echo "User: $user"
     echo ""
 
-    awk -F= '/^\[/ {account=$1} /^\[.*$/ {next;} /^user/ {gsub(/"/,"",$2);printf("Account: %s, User: %s\n", account, $2)} /^fingerprint/ {gsub(/"/,"",$2);printf("Fingerprint: %s\n", $2)} /^tenancy/ {gsub(/"/,"",$2);printf("Tenancy: %s\n", $2)} /^region/ {gsub(/"/,"",$2);printf("Region: %s\n", $2)} /^key_file/ {gsub(/"/,"",$2);printf("Key File Path: %s\n\n", $2)}' /root/Ducky/conf.ini
+    awk -F= '/^\[/ {account=$1} /^\[.*$/ {next;} /^user/ {printf("Account: %s, User: %s\n", account, $2)} /^fingerprint/ {printf("Fingerprint: %s\n", $2)} /^tenancy/ {printf("Tenancy: %s\n", $2)} /^region/ {printf("Region: %s\n", $2)} /^key_file/ {printf("Key File Path: %s\n\n", $2)}' /root/Ducky/conf.ini
 }
 
 # Display menu
