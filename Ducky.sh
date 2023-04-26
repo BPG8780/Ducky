@@ -25,9 +25,7 @@ function downloadDuckyClient {
     displayMenu
 }
 
-#!/bin/bash
 
-# 定义函数
 function createAndReadConfFile {
     echo "[Client]" > "/root/Ducky/conf.ini"
     read -p "请输入 User 值和 Key 值（用等号分隔）：" user_and_key
@@ -39,7 +37,7 @@ function createAndReadConfFile {
     echo "Key=$key_value" >> "/root/Ducky/conf.ini"
     echo "Port=8088" >> "/root/Ducky/conf.ini"
     echo "" >> "/root/Ducky/conf.ini"
-    echo "##### Oracle Cloud账户配置 #####" >> "/root/Ducky/conf.ini"
+    echo "##### Oracle Cloud账户配置 #####"
 
     while true; do
         read -p "输入 'BPG' 完成配置，输入要自定义的名称：" section_name
@@ -66,7 +64,14 @@ function createAndReadConfFile {
     echo -e "\033[33mconf.ini 文件已创建！\033[0m"
 
     awk -F= '/^\[/ {section=$1} /^\[.*$/ {next;} /^user/ {printf("Section: %s, User: %s, Key: %s\n", section, $2, $(getline));} /^fingerprint/ {printf("Fingerprint: %s\n", $2)} /^tenancy/ {printf("Tenancy: %s\n", $2)} /^region/ {printf("Region: %s\n", $2)} /^key_file/ {printf("Key File Path: %s\n\n", $2)}' /root/Ducky/conf.ini
+
+    if command -v displayMenu &>/dev/null; then
+        displayMenu
+    else
+        echo "displayMenu 函数未定义。"
+    fi
 }
+
 
 function readConfFile {
     if [ ! -f "/root/Ducky/conf.ini" ]; then
