@@ -40,28 +40,14 @@ function createConfFile {
     echo "" >> "/root/Ducky/conf.ini"
     echo "##### 甲骨文账号配置 #####"
 
-    while true; do
-        echo ""
-        echo "请输入自定义配置信息："
-        read -p "请输入方括号中的名称：" section_name
-        echo "[$section_name]" >> "/root/Ducky/conf.ini"
-
-        while true; do
-            read -p "请输入变量名（输入 'q' 退出）：" var_name
-            if [[ $var_name == "q" ]]; then
-                break
-            fi
-
-            read -p "请输入 $var_name 的值：" var_value
-            echo "$var_name=\"$var_value\"" >> "/root/Ducky/conf.ini"
-        done
-
-        echo ""
-        read -p "是否要继续添加配置？（y/n） " choice
-        if [[ $choice != "y" ]]; then
-            break
-        fi
-    done
+    echo ""
+    echo "请输入以下信息："
+    read -p "请输入account ID、fingerprint、tenancy、region和key file path（用空格分隔）：" account_id fingerprint tenancy region_name key_file_path
+    echo "user=\"$account_id\"" >> "/root/Ducky/conf.ini"
+    echo "fingerprint=\"$fingerprint\"" >> "/root/Ducky/conf.ini"
+    echo "tenancy=\"$tenancy\"" >> "/root/Ducky/conf.ini"
+    echo "region=\"$region_name\"" >> "/root/Ducky/conf.ini"
+    echo "key_file=\"$key_file_path\"" >> "/root/Ducky/conf.ini"
 
     echo -e "\033[33mconf.ini文件已创建！\033[0m"
 }
