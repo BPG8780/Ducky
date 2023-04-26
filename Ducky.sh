@@ -27,12 +27,14 @@ function downloadDuckyClient {
 
 #!/bin/bash
 
+#!/bin/bash
+
 function createAndReadConfFile {
     echo "[Client]" > "/root/Ducky/conf.ini"
-    read -p "请输入 User 值和 Key 值（用等号分隔）：" 
+    read -p "请输入 User 值和 Key 值（用空格分隔）：" 
 
-    user_value=$(echo "$REPLY" | cut -d'=' -f2)
-    key_value=$(echo "$REPLY" | cut -d'=' -f3)
+    user_value=$(echo "$REPLY" | cut -d ' ' -f 2)
+    key_value=$(echo "$REPLY" | cut -d ' ' -f 4)
 
     echo "User=$user_value" >> "/root/Ducky/conf.ini"
     echo "Key=$key_value" >> "/root/Ducky/conf.ini"
@@ -48,11 +50,11 @@ function createAndReadConfFile {
         echo "[$section_name]" >> "/root/Ducky/conf.ini"
         read -p "请输入 account ID、fingerprint、tenancy、region 和 key file path（用空格分隔）：" 
 
-        account_id=$(echo "$REPLY" | cut -d' ' -f1)
-        fingerprint=$(echo "$REPLY" | cut -d' ' -f2)
-        tenancy=$(echo "$REPLY" | cut -d' ' -f3)
-        region_name=$(echo "$REPLY" | cut -d' ' -f4)
-        key_file_path=$(echo "$REPLY" | cut -d' ' -f5)
+        account_id=$(echo "$REPLY" | cut -d ' ' -f 2)
+        fingerprint=$(echo "$REPLY" | cut -d ' ' -f 4)
+        tenancy=$(echo "$REPLY" | cut -d ' ' -f 6)
+        region_name=$(echo "$REPLY" | cut -d ' ' -f 8)
+        key_file_path=$(echo "$REPLY" | cut -d ' ' -f 10)
 
         echo "user=$account_id" >> "/root/Ducky/conf.ini"
         echo "fingerprint=$fingerprint" >> "/root/Ducky/conf.ini"
@@ -66,7 +68,7 @@ function createAndReadConfFile {
 
     awk -F= '/^\[/ {section=$1} /^\[.*$/ {next;} /^user/ {printf("Section: %s, User: %s, Key: %s\n", section, $2, $(getline));} /^fingerprint/ {printf("Fingerprint: %s\n", $2)} /^tenancy/ {printf("Tenancy: %s\n", $2)} /^region/ {printf("Region: %s\n", $2)} /^key_file/ {printf("Key File Path: %s\n\n", $2)}' /root/Ducky/conf.ini
 
-    exit 0
+    displayMenu
 }
 
 function readConfFile {
