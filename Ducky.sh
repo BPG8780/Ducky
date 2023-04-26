@@ -27,10 +27,10 @@ function downloadDuckyClient {
 
 function createAndReadConfFile {
     echo "[Client]" > "/root/Ducky/conf.ini"
-    read -p "请输入User值和Key值（用空格分隔）：" user_and_key
+    read -p "请输入User值和Key值（用等号分隔）：" user_and_key
 
-    user_value=$(echo $user_and_key | cut -d' ' -f1)
-    key_value=$(echo $user_and_key | cut -d' ' -f2)
+    user_value=$(echo $user_and_key | cut -d'=' -f2)
+    key_value=$(echo $user_and_key | cut -d'=' -f3)
 
     echo "User=$user_value" >> "/root/Ducky/conf.ini"
     echo "Key=$key_value" >> "/root/Ducky/conf.ini"
@@ -39,7 +39,7 @@ function createAndReadConfFile {
     echo "##### Oracle Cloud账户配置 #####"
 
     while true; do
-        read -p "输入 'BPG' 完成配置、输入要添加的自定义名称：" section_name
+        read -p "输入 'BPG' 完成配置、输入要自定义的名称：" section_name
         if [[ $section_name == BPG ]]; then
             break
         fi
