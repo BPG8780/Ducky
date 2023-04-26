@@ -1,14 +1,43 @@
 #!/bin/bash
 
-# Create Ducky directory in /root
-mkdir -p "/root/Ducky/"
+# Display menu and read user input
+function displayMenu {
+echo "请输入要执行的操作："
+echo "1. 下载和安装DuckyClient"
+echo "2. 创建和读取conf.ini文件"
+echo "3. 读取已有的conf.ini文件"
+echo "4. 退出"
+read -p "请选择： " choice
+
+# Call appropriate function based on user input
+case "$choice" in
+    1)
+        downloadDuckyClient
+        ;;
+    2)
+        createAndReadConfFile
+        ;;
+    3)
+        readConfFile
+        ;;
+    4)
+        exit 0
+        ;;
+    *)
+        echo "无效的选择！"
+        displayMenu
+        ;;
+esac
+}
+
+displayMenu
 
 # Download DuckyClient function
 function downloadDuckyClient {
     # Check if the script is being run as root
     if [ "$EUID" -ne 0 ]; then
         echo "请以root用户运行此脚本！"
-        exit 1
+        displayMenu
     fi
 
     # Check system architecture and select appropriate DuckyClient version
@@ -26,16 +55,21 @@ function downloadDuckyClient {
     echo "正在下载DuckyClient $LATEST_VERSION 到 /root/Ducky 目录..."
     wget "$DOWNLOAD_URL" -O "/root/Ducky/DuckyClient" && chmod +x "/root/Ducky/DuckyClient"
 
-    # Your code here
+    # Return to menu
+    displayMenu
 }
 
 # Create conf.ini file
 function createAndReadConfFile {
     echo "[Client]" > "/root/Ducky/conf.ini"
-    read -p "请输入User值: " user
-    echo "User=$user" >> "/root/Ducky/conf.ini"
-    read -p "请输入Key值: " key
-    echo "Key=$key" >> "/root/Ducky/conf.ini"
+    read -p "请输入User值和Key值（用空格分隔）：" user_and_key
+
+    # 分离User和Key值
+    user_value=$(echo $user_and_key | cut -d' ' -f1)
+    key_value=$(echo $user_and_key | cut -d' ' -f2)
+
+    echo "User=$user_value" >> "/root/Ducky/conf.ini"
+    echo "Key=$key_value" >> "/root/Ducky/conf.ini"
     echo "Port=8088" >> "/root/Ducky/conf.ini"
     echo "" >> "/root/Ducky/conf.ini"
     echo "##### Oracle Cloud账户配置 #####"
@@ -57,27 +91,24 @@ function createAndReadConfFile {
 
     echo -e "\033[33mconf.ini文件已创建！\033[0m"
 
-    # 从配置文件中获取Oracle Cloud账户相关信息
-    user=$(awk -F= '/^user/ {gsub(/"/,"",$2);print $2}' /root/Ducky/conf.ini)
-    echo "User: $user"
-    echo ""
+    # Display all configuration sections and options
+    awk -F= '/^\[/ {section=$1} /^\[.*$/ {next;} /^user/ {printf("Section: %s, User: %s, Key: %s\n", section, $2, $(getline));} /^fingerprint/ {printf("Fingerprint: %s\n", $2)} /^tenancy/ {printf("Tenancy: %s\n", $2)} /^region/ {printf("Region: %s\n", $2)} /^key_file/ {printf("Key File Path: %s\n\n", $2)}' /root/Ducky/conf.ini
 
-    awk -F= '/^\[/ {section=$1} /^\[.*$/ {next;} /^user/ {printf("Section: %s, Account: %s\n", section, $2)} /^fingerprint/ {printf("Fingerprint: %s\n", $2)} /^tenancy/ {printf("Tenancy: %s\n", $2)} /^region/ {printf("Region: %s\n", $2)} /^key_file/ {printf("Key File Path: %s\n\n", $2)}' /root/Ducky/conf.ini
+    # Return to menu
+    displayMenu
 }
 
-# Display menu
-echo "请选择您要执行的操作："
-echo "1. 下载最新版本的 DuckyClient"
-echo "2. 创建自定义的 conf.ini 配置文件"
-read choice
+# Read conf.ini file
+function readConfFile {
+    # Check if the conf.ini file exists
+    if [ ! -f "/root/Ducky/conf.ini" ]; then
+        echo "conf.ini 文件不存在！"
+        displayMenu
+    fi
 
-# Call appropriate function based on user's choice
-if [ "$choice" == "1" ]; then
-    echo -e "\033[33m您选择了下载最新版本的 DuckyClient\033[0m"
-    downloadDuckyClient
-elif [ "$choice" == "2" ]; then
-    echo -e "\033[33m您选择了创建自定义的 conf.ini 配置文件\033[0m"
-    createAndReadConfFile
-else
-    echo "尚未实现此功能！"
-fi
+    # Display all configuration sections and options
+    awk -F= '/^\[/ {section=$1} /^\[.*$/ {next;} /^user/ {printf("Section: %s, User: %s, Key: %s\n", section, $2, $(getline));} /^fingerprint/ {printf("Fingerprint: %s\n", $2)} /^tenancy/ {printf("Tenancy: %s\n", $2)} /^region/ {printf("Region: %s\n", $2)} /^key_file/ {printf("Key File Path: %s\n\n", $2)}' /root/Ducky/conf.ini
+
+    # Return to menu
+    displayMenu
+}
