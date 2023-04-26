@@ -42,12 +42,12 @@ function createConfFile {
 
     while true; do
         echo ""
-        echo "请输入新的配置信息："
-        read -p "请输入方括号中的名称: " name
-        echo "[$name]" >> "/root/Ducky/conf.ini"
+        echo "请输入自定义配置信息："
+        read -p "请输入方括号中的名称：" section_name
+        echo "[$section_name]" >> "/root/Ducky/conf.ini"
 
         while true; do
-            read -p "请输入 $name 部分的变量名（输入 'q' 退出）：" var_name
+            read -p "请输入变量名（输入 'q' 退出）：" var_name
             if [[ $var_name == "q" ]]; then
                 break
             fi
