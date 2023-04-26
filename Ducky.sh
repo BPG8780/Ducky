@@ -36,33 +36,33 @@ function createAndReadConfFile {
     echo "User=$user" >> "/root/Ducky/conf.ini"
     read -p "请输入Key值: " key
     echo "Key=$key" >> "/root/Ducky/conf.ini"
-    echo "Port=808" >> "/root/Ducky/conf.ini"
+    echo "Port=8088" >> "/root/Ducky/conf.ini"
     echo "" >> "/root/Ducky/conf.ini"
     echo "##### Oracle Cloud账户配置 #####"
 
-    echo ""
-    echo "请输入以下信息："
-    read -p "请输入account ID、fingerprint、tenancy、region和key file path（用空格分隔）：" account_id fingerprint tenancy region_name key_file_path
-    echo "user='$account_id'" >> "/root/Ducky/conf.ini"
-    echo "fingerprint='$fingerprint'" >> "/root/Ducky/conf.ini"
-    echo "tenancy='$tenancy'" >> "/root/Ducky/conf.ini"
-    echo "region='$region_name'" >> "/root/Ducky/conf.ini"
-    echo "key_file='$key_file_path'" >> "/root/Ducky/conf.ini"
+    while true; do
+        read -p "输入 'done' 完成配置添加，或者输入要添加的自定义节名称：" section_name
+        if [[ $section_name == done ]]; then
+            break
+        fi
+        echo "[$section_name]" >> "/root/Ducky/conf.ini"
+        read -p "请输入account ID、fingerprint、tenancy、region和key file path（用空格分隔）：" account_id fingerprint tenancy region_name key_file_path
+        echo "user=$account_id" >> "/root/Ducky/conf.ini"
+        echo "fingerprint=$fingerprint" >> "/root/Ducky/conf.ini"
+        echo "tenancy=$tenancy" >> "/root/Ducky/conf.ini"
+        echo "region=$region_name" >> "/root/Ducky/conf.ini"
+        echo "key_file=$key_file_path" >> "/root/Ducky/conf.ini"
+        echo "" >> "/root/Ducky/conf.ini"
+    done
 
     echo -e "\033[33mconf.ini文件已创建！\033[0m"
 
     # 从配置文件中获取Oracle Cloud账户相关信息
     user=$(awk -F= '/^user/ {gsub(/"/,"",$2);print $2}' /root/Ducky/conf.ini)
-    fingerprint=$(awk -F= '/^fingerprint/ {gsub(/"/,"",$2);print $2}' /root/Ducky/conf.ini)
-    tenancy=$(awk -F= '/^tenancy/ {gsub(/"/,"",$2);print $2}' /root/Ducky/conf.ini)
-    region=$(awk -F= '/^region/ {gsub(/"/,"",$2);print $2}' /root/Ducky/conf.ini)
-    key_file=$(awk -F= '/^key_file/ {gsub(/"/,"",$2);print $2}' /root/Ducky/conf.ini)
-
     echo "User: $user"
-    echo "Fingerprint: $fingerprint"
-    echo "Tenancy: $tenancy"
-    echo "Region: $region"
-    echo "Key File Path: $key_file"
+    echo ""
+
+    awk -F= '/^\[/ {section=$1} /^\[.*$/ {next;} /^user/ {printf("Section: %s, Account: %s\n", section, $2)} /^fingerprint/ {printf("Fingerprint: %s\n", $2)} /^tenancy/ {printf("Tenancy: %s\n", $2)} /^region/ {printf("Region: %s\n", $2)} /^key_file/ {printf("Key File Path: %s\n\n", $2)}' /root/Ducky/conf.ini
 }
 
 # Display menu
