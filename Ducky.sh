@@ -1,36 +1,6 @@
 #!/bin/bash
 
-# Display menu and read user input
-function displayMenu {
-echo "请输入要执行的操作："
-echo "1. 下载和安装DuckyClient"
-echo "2. 创建和读取conf.ini文件"
-echo "3. 读取已有的conf.ini文件"
-echo "4. 退出"
-read -p "请选择： " choice
-
-# Call appropriate function based on user input
-case "$choice" in
-    1)
-        downloadDuckyClient
-        ;;
-    2)
-        createAndReadConfFile
-        ;;
-    3)
-        readConfFile
-        ;;
-    4)
-        exit 0
-        ;;
-    *)
-        echo "无效的选择！"
-        displayMenu
-        ;;
-esac
-}
-
-displayMenu
+mkdir -p "/root/Ducky/"
 
 # Download DuckyClient function
 function downloadDuckyClient {
@@ -112,3 +82,34 @@ function readConfFile {
     # Return to menu
     displayMenu
 }
+
+function displayMenu {
+echo "请输入要执行的操作："
+echo "1. 下载和安装DuckyClient"
+echo "2. 创建和读取conf.ini文件"
+echo "3. 读取已有的conf.ini文件"
+echo "4. 退出"
+read -p "请选择： " choice
+
+# Call appropriate function based on user input
+case "$choice" in
+    1)
+        downloadDuckyClient
+        ;;
+    2)
+        createAndReadConfFile
+        ;;
+    3)
+        readConfFile
+        ;;
+    4)
+        exit 0
+        ;;
+    *)
+        echo "无效的选择！"
+        displayMenu
+        ;;
+esac
+}
+
+displayMenu
