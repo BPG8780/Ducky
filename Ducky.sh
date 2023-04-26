@@ -42,25 +42,9 @@ function createConfFile {
 
     while true; do
         echo ""
-        echo "请输入新的配置信息："
-        echo -n "请输入方括号中的名称："
-        read name
-        echo "[$name]" >> "/root/Ducky/conf.ini"
-        echo -n "请输入user的值："
-        read jg_user
-        echo "user=$jg_user" >> "/root/Ducky/conf.ini"
-        echo -n "请输入fingerprint的值："
-        read fingerprint
-        echo "fingerprint=\"$fingerprint\"" >> "/root/Ducky/conf.ini"
-        echo -n "请输入tenancy的值："
-        read tenancy
-        echo "tenancy=$tenancy" >> "/root/Ducky/conf.ini"
-        echo -n "请输入region的值："
-        read region
-        echo "region=$region" >> "/root/Ducky/conf.ini"
-        echo -n "请输入key_file的值："
-        read key_file
-        echo "key_file=$key_file" >> "/root/Ducky/conf.ini"
+        echo "请输入要添加到配置文件中的完整行："
+        read line
+        echo "$line" >> "/root/Ducky/conf.ini"
 
         echo ""
         read -p "是否要继续添加配置？（y/n） " choice
