@@ -40,18 +40,34 @@ function createConfFile {
     echo "" >> "/root/Ducky/conf.ini"
     echo "##### 甲骨文账号配置 #####"
 
-    read -p "请输入中括号中的内容: " section_name
-    echo "[$section_name]" >> "/root/Ducky/conf.ini"
-    read -p "请输入$section_name中的user值: " jg_user
-    echo "user=$jg_user" >> "/root/Ducky/conf.ini"
-    read -p "请输入$section_name中的fingerprint值: " fingerprint
-    echo "fingerprint=$fingerprint" >> "/root/Ducky/conf.ini"
-    read -p "请输入$section_name中的tenancy值: " tenancy
-    echo "tenancy=$tenancy" >> "/root/Ducky/conf.ini"
-    read -p "请输入$section_name中的region值: " region
-    echo "region=$region" >> "/root/Ducky/conf.ini"
-    read -p "请输入$section_name中的key_file值: " key_file
-    echo "key_file=$key_file" >> "/root/Ducky/conf.ini"
+    while true; do
+        echo ""
+        echo "请输入新的配置信息："
+        echo -n "请输入方括号中的名称："
+        read name
+        echo "[$name]" >> "/root/Ducky/conf.ini"
+        echo -n "请输入user的值："
+        read jg_user
+        echo "user=$jg_user" >> "/root/Ducky/conf.ini"
+        echo -n "请输入fingerprint的值："
+        read fingerprint
+        echo "fingerprint=\"$fingerprint\"" >> "/root/Ducky/conf.ini"
+        echo -n "请输入tenancy的值："
+        read tenancy
+        echo "tenancy=$tenancy" >> "/root/Ducky/conf.ini"
+        echo -n "请输入region的值："
+        read region
+        echo "region=$region" >> "/root/Ducky/conf.ini"
+        echo -n "请输入key_file的值："
+        read key_file
+        echo "key_file=$key_file" >> "/root/Ducky/conf.ini"
+
+        echo ""
+        read -p "是否要继续添加配置？（y/n） " choice
+        if [[ $choice != "y" ]]; then
+            break
+        fi
+    done
 
     echo -e "\033[33mconf.ini文件已创建！\033[0m"
 }
