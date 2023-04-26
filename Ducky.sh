@@ -27,7 +27,7 @@ function downloadDuckyClient {
 
 function createAndReadConfFile {
     echo "[Client]" > "/root/Ducky/conf.ini"
-    read -p "请输入User值和Key值（用等号分隔）：" user_and_key
+    read -p "请输入 User 值和 Key 值（用等号分隔）：" user_and_key
 
     user_value=$(echo $user_and_key | cut -d'=' -f2)
     key_value=$(echo $user_and_key | cut -d'=' -f3)
@@ -39,12 +39,19 @@ function createAndReadConfFile {
     echo "##### Oracle Cloud账户配置 #####"
 
     while true; do
-        read -p "输入 'BPG' 完成配置、输入要自定义的名称：" section_name
+        read -p "输入 'BPG' 完成配置，输入要自定义的名称：" section_name
         if [[ $section_name == BPG ]]; then
             break
         fi
         echo "[$section_name]" >> "/root/Ducky/conf.ini"
-        read -p "请输入account ID、fingerprint、tenancy、region和key file path（用空格分隔）：" account_id fingerprint tenancy region_name key_file_path
+        read -p "请输入 account ID、fingerprint、tenancy、region 和 key file path（用空格分隔）：" values
+
+        account_id=$(echo $values | cut -d' ' -f1)
+        fingerprint=$(echo $values | cut -d' ' -f2)
+        tenancy=$(echo $values | cut -d' ' -f3)
+        region_name=$(echo $values | cut -d' ' -f4)
+        key_file_path=$(echo $values | cut -d' ' -f5)
+
         echo "user=$account_id" >> "/root/Ducky/conf.ini"
         echo "fingerprint=$fingerprint" >> "/root/Ducky/conf.ini"
         echo "tenancy=$tenancy" >> "/root/Ducky/conf.ini"
@@ -53,7 +60,7 @@ function createAndReadConfFile {
         echo "" >> "/root/Ducky/conf.ini"
     done
 
-    echo -e "\033[33mconf.ini文件已创建！\033[0m"
+    echo -e "\033[33mconf.ini 文件已创建！\033[0m"
 
     awk -F= '/^\[/ {section=$1} /^\[.*$/ {next;} /^user/ {printf("Section: %s, User: %s, Key: %s\n", section, $2, $(getline));} /^fingerprint/ {printf("Fingerprint: %s\n", $2)} /^tenancy/ {printf("Tenancy: %s\n", $2)} /^region/ {printf("Region: %s\n", $2)} /^key_file/ {printf("Key File Path: %s\n\n", $2)}' /root/Ducky/conf.ini
 
