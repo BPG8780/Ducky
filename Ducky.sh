@@ -147,28 +147,45 @@ function restartDuckyClient {
     displayMenu
 }
 
-#!/bin/bash
-
 function displayMenu {
-    echo "请选择要执行的操作："
-    echo "1 - 下载 DuckyClient"
-    echo "2 - 创建 conf.ini 文件"
-    echo "3 - 添加新的甲骨文账号配置"
-    echo "4 - 启动 DuckyClient"
-    echo "5 - 设置开机启动"
-    echo "6 - 重启 DuckyClient"
-    echo "7 - 退出"
+echo "请选择要执行的操作："
+echo "1 - 安装 DuckyClient"
+echo "2 - 创建 conf.ini 文件"
+echo "3 - 添加新的配置"
+echo "4 - 启动 DuckyClient"
+echo "5 - 设置开机启动"
+echo "6 - 重启 DuckyClient"
+echo "0 - 退出"
 
-    read -p "请输入数字选项：" choice
+read -p "请输入数字选项：" choice
 
-    case $choice in
-        1) downloadDuckyClient;;
-        2) createConfFile;;
-        3) addNewOracleAccount;;
-        4) startDuckyClient;;
-        5) enableDuckyClientAtBoot;;
-        6) restartDuckyClient;;
-        7) exit 0;;
-        *) echo "无效的选择！"; displayMenu;;
-    esac
+case "$choice" in
+    1)
+        downloadDuckyClient
+        ;;
+    2)
+        createAndReadConfFile
+        ;;
+    3) 
+        addNewOracleAccount
+        ;;
+    4) 
+        startDuckyClient
+        ;;
+    5) 
+        enableDuckyClientAtBoot
+        ;;
+    6) 
+        restartDuckyClient
+        ;;
+    0) 
+        exit 0
+        ;;
+    *)
+        echo "无效的选择！"
+        displayMenu
+        ;;
+esac
 }
+
+displayMenu
