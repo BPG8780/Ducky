@@ -164,7 +164,7 @@ case "$choice" in
         downloadDuckyClient
         ;;
     2)
-        createAndReadConfFile
+        createConfFile
         ;;
     3) 
         addNewOracleAccount
