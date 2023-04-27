@@ -29,6 +29,8 @@ function downloadDuckyClient {
 
 #!/bin/bash
 
+#!/bin/bash
+
 function createAndReadConfFile {
     echo "[Client]" > "/root/Ducky/conf.ini"
     read -p "请输入 User 值和 Key 值（用空格分隔）：" 
@@ -50,11 +52,11 @@ function createAndReadConfFile {
         echo "[$section_name]" >> "/root/Ducky/conf.ini"
         read -p "请输入 account ID、fingerprint、tenancy、region 和 key file path（用空格分隔）：" 
 
-        account_id=$(echo "$REPLY" | cut -d ' ' -f 2)
-        fingerprint=$(echo "$REPLY" | cut -d ' ' -f 4)
-        tenancy=$(echo "$REPLY" | cut -d ' ' -f 6)
-        region_name=$(echo "$REPLY" | cut -d ' ' -f 8)
-        key_file_path=$(echo "$REPLY" | cut -d ' ' -f 10)
+        account_id=$(echo "$REPLY" | cut -d ' ' -f 1)
+        fingerprint=$(echo "$REPLY" | cut -d ' ' -f 2)
+        tenancy=$(echo "$REPLY" | cut -d ' ' -f 3)
+        region_name=$(echo "$REPLY" | cut -d ' ' -f 4)
+        key_file_path=$(echo "$REPLY" | cut -d ' ' -f 5)
 
         echo "user=$account_id" >> "/root/Ducky/conf.ini"
         echo "fingerprint=$fingerprint" >> "/root/Ducky/conf.ini"
