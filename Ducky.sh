@@ -31,12 +31,13 @@ function downloadDuckyClient {
 
 #!/bin/bash
 
+#!/bin/bash
+
 function createAndReadConfFile {
     echo "[Client]" > "/root/Ducky/conf.ini"
-    read -p "请输入 User 值和 Key 值（用空格分隔）：" 
 
-    user_value=$(echo "$REPLY" | cut -d ' ' -f 2)
-    key_value=$(echo "$REPLY" | cut -d ' ' -f 4)
+    read -p "请输入 User 值：" user_value
+    read -p "请输入 Key 值: " key_value
 
     echo "User=$user_value" >> "/root/Ducky/conf.ini"
     echo "Key=$key_value" >> "/root/Ducky/conf.ini"
@@ -72,6 +73,8 @@ function createAndReadConfFile {
 
     displayMenu
 }
+
+
 
 function readConfFile {
     if [ ! -f "/root/Ducky/conf.ini" ]; then
