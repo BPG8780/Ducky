@@ -76,7 +76,8 @@ After=network.target
 [Service]
 ExecStart=/root/Ducky/DuckyClient
 WorkingDirectory=/root/Ducky/
-StandardOutput=null
+Restart=always
+RestartSec=30
 
 [Install]
 WantedBy=multi-user.target
@@ -85,7 +86,7 @@ EOF
     systemctl daemon-reload
     systemctl enable DuckyClient.service
 
-    echo -e "\033[32mDuckyClient 已经配置为开机启动！\033[0m"
+    echo -e "\033[32mDuckyClient 已设置开机启动！\033[0m"
 
     if ! pgrep DuckyClient > /dev/null; then
         echo "DuckyClient 进程未运行！"
