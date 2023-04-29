@@ -15,8 +15,11 @@ function downloadDuckyClient {
         CPU_ARCH="arm64"
     fi
 
-    LATEST_VERSION=$(curl --silent https://api.github.com/DuckyProject/DuckyRoBot/releases/latest | awk -F "[><]" '/tag\/.*\.0/{print $3;exit}')
+    LATEST_VERSION=$(curl --silent https://api.github.com/repos/DuckyProject/DuckyRoBot/releases/latest | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
     DOWNLOAD_URL="https://github.com/DuckyProject/DuckyRoBot/releases/download/$LATEST_VERSION/DuckyClient-$CPU_ARCH"
+
+    echo "正在下载DuckyClient $LATEST_VERSION 到 /root/Ducky 目录..."
+    wget "$DOWNLOAD_URL" -O "/root/Ducky/DuckyClient" && chmod +x "/root/Ducky/DuckyClient"
 
     if [[ -f "/root/Ducky/DuckyClient" ]]; then
         CURRENT_VERSION=$(/root/Ducky/DuckyClient -v | cut -d ' ' -f 2)
