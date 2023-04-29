@@ -15,7 +15,7 @@ function downloadDuckyClient {
         CPU_ARCH="arm64"
     fi
 
-    LATEST_VERSION=$(curl --silent https://github.com/DuckyProject/DuckyRoBot/releases/latest | awk -F "[><]" '/tag\/.*\.0/{print $3;exit}')
+    LATEST_VERSION=$(curl --silent https://api.github.com/DuckyProject/DuckyRoBot/releases/latest | awk -F "[><]" '/tag\/.*\.0/{print $3;exit}')
     DOWNLOAD_URL="https://github.com/DuckyProject/DuckyRoBot/releases/download/$LATEST_VERSION/DuckyClient-$CPU_ARCH"
 
     if [[ -f "/root/Ducky/DuckyClient" ]]; then
