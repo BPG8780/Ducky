@@ -15,11 +15,23 @@ function downloadDuckyClient {
         CPU_ARCH="arm64"
     fi
 
-    LATEST_VERSION=$(curl --silent https://api.github.com/repos/DuckyProject/DuckyRoBot/releases/latest | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
+    LATEST_VERSION=$(curl --silent https://github.com/DuckyProject/DuckyRoBot/releases/latest | awk -F "[><]" '/tag\/.*\.0/{print $3;exit}')
     DOWNLOAD_URL="https://github.com/DuckyProject/DuckyRoBot/releases/download/$LATEST_VERSION/DuckyClient-$CPU_ARCH"
+
+    if [[ -f "/root/Ducky/DuckyClient" ]]; then
+        CURRENT_VERSION=$(/root/Ducky/DuckyClient -v | cut -d ' ' -f 2)
+        if [[ $LATEST_VERSION == $CURRENT_VERSION ]]; then
+            echo -e "\033[32m你已经安装了最新版本的 DuckyClient！\033[0m"
+            displayMenu
+        else
+            echo -e "\033[33m检测到当前已安装 DuckyClient 的版本为 $CURRENT_VERSION，最新版本为 $LATEST_VERSION。\033[0m"
+        fi
+    fi
 
     echo "正在下载DuckyClient $LATEST_VERSION 到 /root/Ducky 目录..."
     wget "$DOWNLOAD_URL" -O "/root/Ducky/DuckyClient" && chmod +x "/root/Ducky/DuckyClient"
+
+    echo -e "\033[32mDuckyClient 下载完成！\033[0m"
 
     displayMenu
 }
