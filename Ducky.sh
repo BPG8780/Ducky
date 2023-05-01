@@ -86,12 +86,11 @@ function DuckyClientService {
     cat << EOF > "/etc/systemd/system/DuckyClient.service"
 [Unit]
 Description=DuckyClient Service
-After=network.target
 
 [Service]
 Type=simple
-ExecStart=/root/Ducky/DuckyClient
-WorkingDirectory=/root/Ducky/
+WorkingDirectory=/Ducky/DuckyClient
+ExecStart=/Ducky/DuckyClient/DuckyClient &
 Restart=always
 RestartSec=30
 
