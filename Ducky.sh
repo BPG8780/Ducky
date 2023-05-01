@@ -89,8 +89,8 @@ Description=DuckyClient Service
 
 [Service]
 Type=simple
-WorkingDirectory=/Ducky/DuckyClient
-ExecStart=/Ducky/DuckyClient/DuckyClient &
+WorkingDirectory=/root/Ducky
+ExecStart=/root/Ducky/DuckyClient &
 Restart=always
 RestartSec=30
 
@@ -99,9 +99,10 @@ WantedBy=multi-user.target
 EOF
 
     systemctl daemon-reload
+    systemctl start DuckyClient.service
     systemctl enable DuckyClient.service
 
-    echo -e "\033[32mDuckyClient 已设置开机启动！\033[0m"
+    echo -e "\033[32mDuckyClient 已启动以及设置开机启动！\033[0m"
 
     if ! pgrep DuckyClient > /dev/null; then
         echo "DuckyClient 进程未运行！"
