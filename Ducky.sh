@@ -89,6 +89,7 @@ Description=DuckyClient Service
 After=network.target
 
 [Service]
+Type=simple
 ExecStart=/root/Ducky/DuckyClient
 WorkingDirectory=/root/Ducky/
 Restart=always
