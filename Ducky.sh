@@ -1,12 +1,31 @@
 #!/bin/bash
+# 检查是否以root用户身份运行
+if [ "$(id -u)" != "0" ]; then
+    echo "请以Root用户运行此脚本！"
+    exit 1
+fi
+
+# 提取Linux版本号并将其保存到变量中
+OS=$(cat /etc/*-release | grep "^NAME" | head -n1 | cut -d= -f2 | tr -d '""')
+
+function update_dependencies() {
+    # 根据操作系统变量执行适当的更新命令
+    if [ "$OS" == "Ubuntu" ] || [ "$OS" == "Debian GNU/Linux" ]; then
+        apt-get update
+        apt-get upgrade -y
+        apt-get check
+    elif [ "$OS" == "CentOS Linux" ] || [ "$OS" == "Red Hat Enterprise Linux Server" ]; then
+        yum update -y
+        yum upgrade -y
+        yum check
+    else
+        echo "不支持的操作系统"
+        exit 1
+    fi
+}
 
 function downloadDuckyClient {
 
-    if [ "$EUID" -ne 0 ]; then
-        echo "请以root用户运行此脚本！"
-        displayMenu
-    fi
-    
     mkdir -p "/root/Ducky/"
 
     if [ $(uname -m) == "x86_64" ]; then
@@ -123,26 +142,31 @@ EOF
 }
 
 function displayMenu {
+    echo -e "操作系统: \033[33m$OS\033[0m"
     echo -e "\033[33m请选择要执行的操作：\033[0m"
-    echo -e "\033[33m1 - 安装 DuckyClient\033[0m"
-    echo -e "\033[33m2 - 创建 conf.ini 文件\033[0m"
-    echo -e "\033[33m3 - 添加新的配置\033[0m"
-    echo -e "\033[33m4 - 启动 DuckyClient\033[0m"
+    echo -e "\033[33m1 - 更新系统和依赖\033[0m"
+    echo -e "\033[33m2 - 安装 DuckyClient\033[0m"
+    echo -e "\033[33m3 - 创建 conf.ini 文件\033[0m"
+    echo -e "\033[33m4 - 添加新的配置\033[0m"
+    echo -e "\033[33m5 - 启动 DuckyClient\033[0m"
     echo -e "\033[33m0 - 退出\033[0m"
 
     read -p "请输入数字选项：" choice
 
     case "$choice" in
         1)
-            downloadDuckyClient
+            update_dependencies
             ;;
         2)
+            downloadDuckyClient
+            ;;
+        3)
             createConfFile
             ;;
-        3) 
+        4) 
             addNewOracleAccount
             ;;
-        4) 
+        5) 
             DuckyClientService
             ;;
         0) 
