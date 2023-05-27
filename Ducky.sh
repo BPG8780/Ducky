@@ -134,5 +134,5 @@ function displayMenu {
             displayMenu
             ;;
     esac
-}/
+}
 displayMenu
