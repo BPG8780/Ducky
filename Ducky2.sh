@@ -6,38 +6,21 @@ if [ "$(id -u)" != "0" ]; then
     exit 1
 fi
 
-# 检测系统信息并将其保存到变量中
-if [ -f /etc/os-release ]; then
-    if grep -q "ID=debian\|ID=ubuntu" /etc/os-release; then
-        SYSTEM="Debian/Ubuntu"
-    elif grep -q "ID=centos\|ID=\"rhel\"" /etc/os-release; then
-        SYSTEM="CentOS/RHEL"
-    else
-        SYSTEM="Unknown"
-    fi
-else
-    SYSTEM="Unknown"
-fi
+# 提取Linux版本号并将其保存到变量中
+OS=$(cat /etc/*-release | grep "^NAME" | head -n1 | cut -d= -f2 | tr -d '""')
 
 function update_dependencies() {
-    # 更新包列表并更新系统已安装的软件包
-    if [ "$SYSTEM" == "Debian/Ubuntu" ]; then
+    # 根据操作系统变量执行适当的更新命令
+    if [ "$OS" == "Ubuntu" ] || [ "$OS" == "Debian GNU/Linux" ]; then
         apt-get update
         apt-get upgrade -y
-    elif [ "$SYSTEM" == "CentOS/RHEL" ]; then
+        apt-get check
+    elif [ "$OS" == "CentOS Linux" ] || [ "$OS" == "Red Hat Enterprise Linux Server" ]; then
         yum update -y
         yum upgrade -y
-    else
-        echo "Unsupported Linux distribution"
-        exit 1
-    fi
-    # 检查软件包的依赖关系
-    if [ "$SYSTEM" == "Debian/Ubuntu" ]; then
-        apt-get check
-    elif [ "$SYSTEM" == "CentOS/RHEL" ]; then
         yum check
     else
-        echo "Unsupported Linux distribution"
+        echo "Unsupported operating system"
         exit 1
     fi
 }
@@ -47,7 +30,7 @@ function display_menu(){
     echo "=============================="
     echo "          菜单                "
     echo "=============================="
-    echo "系统类型: $SYSTEM"
+    echo "操作系统: $OS"
     echo 
     echo "1. 更新系统和依赖项"
     echo "2. 退出"
