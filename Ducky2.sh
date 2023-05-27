@@ -28,9 +28,9 @@ function update_dependencies() {
 function display_menu(){
     clear
     echo "=============================="
-    echo "          菜单                "
+    echo -e "          菜单                "
     echo "=============================="
-    echo "操作系统: $OS"
+    echo -e "操作系统: \033[33m$OS\033[0m"
     echo 
     echo "1. 更新系统和依赖项"
     echo "2. 退出"
