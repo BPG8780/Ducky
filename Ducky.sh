@@ -61,8 +61,8 @@ function downloadDuckyClient {
 function createConfFile {
     echo "[Client]" > "/root/Ducky/conf.ini"
 
-    read -p $'\e[31m请输入 User 值：\e[0m' user_value
-    read -p $'\e[31m请输入 Key 值: \e[0m' key_value
+    read -p $'\e[33m请输入 User 值：\e[0m' user_value
+    read -p $'\e[33m请输入 Key 值: \e[0m' key_value
 
     echo "User=$user_value" >> "/root/Ducky/conf.ini"
     echo "Key=$key_value" >> "/root/Ducky/conf.ini"
@@ -80,7 +80,7 @@ function addNewOracleAccount {
             break
         fi
         echo "[$section_name]" >> "/root/Ducky/conf.ini"
-        read -p $'\e[31m请输入 《user、fingerprint、tenancy、region、key_file》=数值（用空格分隔）：\e[0m'
+        read -p $'\e[33m请输入 《user、fingerprint、tenancy、region、key_file》=数值（用空格分隔）：\e[0m'
  
         account_id=$(echo "$REPLY" | cut -d ' ' -f 1)
         fingerprint=$(echo "$REPLY" | cut -d ' ' -f 2)
@@ -92,7 +92,7 @@ function addNewOracleAccount {
         echo "fingerprint=$fingerprint" >> "/root/Ducky/conf.ini"
         echo "tenancy=$tenancy" >> "/root/Ducky/conf.ini"
         echo "region=$region_name" >> "/root/Ducky/conf.ini"
-        echo "key_file=$key_file_path" >> "/root/Ducky/conf.ini"
+        echo "key_file=/root/Ducky/$key_file_path" >> "/root/Ducky/conf.ini"
         echo "" >> "/root/Ducky/conf.ini"
     done
 
@@ -143,7 +143,7 @@ EOF
 
 function displayMenu {
     echo -e "========================="
-    echo -e "操作系统: \033[31m$OS\033[0m"
+    echo -e "操作系统: \033[33m$OS\033[0m"
     echo -e "========================="
     echo -e "\033[33m请选择要执行的操作：\033[0m"
     echo -e "\033[33m1 - 更新$OS软件和依赖\033[0m"
