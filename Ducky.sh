@@ -142,7 +142,8 @@ EOF
 }
 
 function displayMenu {
-    echo -e "操作系统: \033[33m$OS\033[0m"
+    echo -e "操作系统: \033[31m$OS\033[0m"
+    echo -e "========================="
     echo -e "\033[33m请选择要执行的操作：\033[0m"
     echo -e "\033[33m1 - 更新系统和依赖\033[0m"
     echo -e "\033[33m2 - 安装 DuckyClient\033[0m"
