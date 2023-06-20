@@ -18,10 +18,6 @@ function update_dependencies() {
         yum update -y
         yum upgrade -y
         yum check
-    elif [ "$OS" == "Oracle Linux Server" ] || [ "$OS" == "AlmaLinux" ] || [ "$OS" == "Rocky Linux" ]; then
-        dnf update -y
-        dnf upgrade -y
-        dnf check
     else
         echo "不支持的操作系统"
         exit 1
@@ -30,7 +26,7 @@ function update_dependencies() {
 
 function downloadDuckyClient {
 
-    mkdir -p "/root/data/ducky_bot/"
+    mkdir -p "/root/Ducky/"
 
     if [ $(uname -m) == "x86_64" ]; then
         CPU_ARCH="amd64"
@@ -41,11 +37,11 @@ function downloadDuckyClient {
     LATEST_VERSION=$(curl --silent https://api.github.com/repos/DuckyProject/DuckyRoBot/releases/latest | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
     DOWNLOAD_URL="https://github.com/DuckyProject/DuckyRoBot/releases/download/$LATEST_VERSION/DuckyClient-$CPU_ARCH"
 
-    echo "正在下载DuckyClient $LATEST_VERSION 到 /root/data/ducky_bot 目录..."
-    wget "$DOWNLOAD_URL" -O "/root/data/ducky_bot/DuckyClient" && chmod +x "/root/data/ducky_bot/DuckyClient"
+    echo "正在下载DuckyClient $LATEST_VERSION 到 /root/Ducky 目录..."
+    wget "$DOWNLOAD_URL" -O "/root/Ducky/DuckyClient" && chmod +x "/root/Ducky/DuckyClient"
 
-    if [[ -f "/root/data/ducky_bot/DuckyClient" ]]; then
-        CURRENT_VERSION=$(/root/data/ducky_bot/DuckyClient -v | cut -d ' ' -f 2)
+    if [[ -f "/root/Ducky/DuckyClient" ]]; then
+        CURRENT_VERSION=$(/root/Ducky/DuckyClient -v | cut -d ' ' -f 2)
         if [[ $LATEST_VERSION == $CURRENT_VERSION ]]; then
             echo -e "\033[32m你已经安装了最新版本的 DuckyClient！\033[0m"
             displayMenu
@@ -54,8 +50,8 @@ function downloadDuckyClient {
         fi
     fi
 
-    echo "正在下载DuckyClient $LATEST_VERSION 到 /root/data/ducky_bot 目录..."
-    wget "$DOWNLOAD_URL" -O "/root/data/ducky_bot/DuckyClient" && chmod +x "/root/data/ducky_bot/DuckyClient"
+    echo "正在下载DuckyClient $LATEST_VERSION 到 /root/Ducky 目录..."
+    wget "$DOWNLOAD_URL" -O "/root/Ducky/DuckyClient" && chmod +x "/root/Ducky/DuckyClient"
 
     echo -e "\033[32mDuckyClient 下载完成！\033[0m"
 
@@ -63,16 +59,16 @@ function downloadDuckyClient {
 }
 
 function createConfFile {
-    echo "[Client]" > "/root/data/ducky_bot/conf.ini"
+    echo "[Client]" > "/root/Ducky/conf.ini"
 
     read -p $'\e[33m请输入 User 值：\e[0m' user_value
     read -p $'\e[33m请输入 Key 值: \e[0m' key_value
 
-    echo "User=$user_value" >> "/root/data/ducky_bot/conf.ini"
-    echo "Key=$key_value" >> "/root/data/ducky_bot/conf.ini"
-    echo "Port=8088" >> "/root/data/ducky_bot/conf.ini"
-    echo "" >> "/root/data/ducky_bot/conf.ini"
-    echo "##### 甲骨文账号配置 #####" >> "/root/data/ducky_bot/conf.ini"
+    echo "User=$user_value" >> "/root/Ducky/conf.ini"
+    echo "Key=$key_value" >> "/root/Ducky/conf.ini"
+    echo "Port=8088" >> "/root/Ducky/conf.ini"
+    echo "" >> "/root/Ducky/conf.ini"
+    echo "##### 甲骨文账号配置 #####" >> "/root/Ducky/conf.ini"
 
     addNewOracleAccount
 }
@@ -83,7 +79,7 @@ function addNewOracleAccount {
         if [[ $section_name == BPG ]]; then
             break
         fi
-        echo "[$section_name]" >> "/root/data/ducky_bot/conf.ini"
+        echo "[$section_name]" >> "/root/Ducky/conf.ini"
         read -p $'\e[33m请输入 《user、fingerprint、tenancy、region、key_file》=数值（用空格分隔）：\e[0m'
  
         account_id=$(echo "$REPLY" | cut -d ' ' -f 1)
@@ -92,12 +88,12 @@ function addNewOracleAccount {
         region_name=$(echo "$REPLY" | cut -d ' ' -f 4)
         key_file_path=$(echo "$REPLY" | cut -d ' ' -f 5)
 
-        echo "user=$account_id" >> "/root/data/ducky_bot/conf.ini"
-        echo "fingerprint=$fingerprint" >> "/root/data/ducky_bot/conf.ini"
-        echo "tenancy=$tenancy" >> "/root/data/ducky_bot/conf.ini"
-        echo "region=$region_name" >> "/root/data/ducky_bot/conf.ini"
-        echo "key_file=/root/data/ducky_bot/$key_file_path" >> "/root/data/ducky_bot/conf.ini"
-        echo "" >> "/root/data/ducky_bot/conf.ini"
+        echo "user=$account_id" >> "/root/Ducky/conf.ini"
+        echo "fingerprint=$fingerprint" >> "/root/Ducky/conf.ini"
+        echo "tenancy=$tenancy" >> "/root/Ducky/conf.ini"
+        echo "region=$region_name" >> "/root/Ducky/conf.ini"
+        echo "key_file=/root/Ducky/$key_file_path" >> "/root/Ducky/conf.ini"
+        echo "" >> "/root/Ducky/conf.ini"
     done
 
     echo -e "\033[33mconf.ini 文件已更新！\033[0m"
@@ -106,24 +102,24 @@ function addNewOracleAccount {
 }
 
 function DuckyClientService {
-    cat << EOF > "/etc/systemd/system/DuckyClient.service"
+    cat << EOF > "/etc/systemd/system/ducky_update.service"
 [Unit]
 Description=DuckyClient Service
 
 [Service]
 Type=simple
-WorkingDirectory=/root/data/ducky_bot
-ExecStart=/root/data/ducky_bot/DuckyClient &
+WorkingDirectory=/root/Ducky
+ExecStart=/root/Ducky/DuckyClient &
 Restart=always
-RestartSec=0
+RestartSec=30
 
 [Install]
 WantedBy=multi-user.target
 EOF
 
     systemctl daemon-reload
-    systemctl start DuckyClient.service
-    systemctl enable DuckyClient.service
+    systemctl start ducky_update.service
+    systemctl enable ducky_update.service
 
     echo -e "\033[32mDuckyClient 已启动以及设置开机启动！\033[0m"
 
