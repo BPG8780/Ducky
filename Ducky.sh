@@ -40,22 +40,6 @@ function downloadDuckyClient {
     echo "正在下载DuckyClient $LATEST_VERSION 到 /root/Ducky 目录..."
     wget "$DOWNLOAD_URL" -O "/root/Ducky/client" && chmod +x "/root/Ducky/client"
 
-    if [[ -f "/root/Ducky/client" ]]; then
-        CURRENT_VERSION=$(/root/Ducky/DuckyClient -v | cut -d ' ' -f 2)
-        if [[ $LATEST_VERSION == $CURRENT_VERSION ]]; then
-            echo -e "\033[32m你已经安装了最新版本的 DuckyClient！\033[0m"
-            displayMenu
-        else
-            echo -e "\033[33m检测到当前已安装 DuckyClient 的版本为 $CURRENT_VERSION，最新版本为 $LATEST_VERSION。\033[0m"
-        fi
-    fi
-
-    echo "正在下载DuckyClient $LATEST_VERSION 到 /root/Ducky 目录..."
-    wget "$DOWNLOAD_URL" -O "/root/Ducky/client" && chmod +x "/root/Ducky/client"
-
-    echo -e "\033[32mDuckyClient 下载完成！\033[0m"
-
-    displayMenu
 }
 
 function createConfFile {
@@ -102,32 +86,32 @@ function addNewOracleAccount {
 }
 
 function DuckyClientService {
-    cat << EOF > "/etc/systemd/system/duck.service"
+    cat << EOF > "/etc/systemd/system/ducky_bot.service"
 [Unit]
 Description=DuckyClient Service
 
 [Service]
 Type=simple
 WorkingDirectory=/root/Ducky
-ExecStart=/root/Ducky/client &
+ExecStart=/root/Ducky/client
 Restart=always
-RestartSec=30
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
 EOF
 
     systemctl daemon-reload
-    systemctl start ducky.service
-    systemctl enable ducky.service
+    systemctl start ducky_bot.service
+    systemctl enable ducky_bot.service
 
     echo -e "\033[32mDuckyClient 已启动以及设置开机启动！\033[0m"
 
-    if ! pgrep DuckyClient > /dev/null; then
+    if ! pgrep client > /dev/null; then
         echo "DuckyClient 进程未运行！"
     else
         echo "正在重启 DuckyClient ..."
-        systemctl restart ducky.service
+        systemctl restart ducky_bot.service
     fi
 
     sleep 1s
