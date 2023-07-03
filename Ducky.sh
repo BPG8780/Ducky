@@ -38,9 +38,9 @@ function downloadDuckyClient {
     DOWNLOAD_URL="https://github.com/DuckyProject/DuckyRoBot/releases/download/$LATEST_VERSION/DuckyClient-$CPU_ARCH"
 
     echo "正在下载DuckyClient $LATEST_VERSION 到 /root/Ducky 目录..."
-    wget "$DOWNLOAD_URL" -O "/root/Ducky/DuckyClient" && chmod +x "/root/Ducky/DuckyClient"
+    wget "$DOWNLOAD_URL" -O "/root/Ducky/client" && chmod +x "/root/Ducky/client"
 
-    if [[ -f "/root/Ducky/DuckyClient" ]]; then
+    if [[ -f "/root/Ducky/client" ]]; then
         CURRENT_VERSION=$(/root/Ducky/DuckyClient -v | cut -d ' ' -f 2)
         if [[ $LATEST_VERSION == $CURRENT_VERSION ]]; then
             echo -e "\033[32m你已经安装了最新版本的 DuckyClient！\033[0m"
@@ -51,7 +51,7 @@ function downloadDuckyClient {
     fi
 
     echo "正在下载DuckyClient $LATEST_VERSION 到 /root/Ducky 目录..."
-    wget "$DOWNLOAD_URL" -O "/root/Ducky/DuckyClient" && chmod +x "/root/Ducky/DuckyClient"
+    wget "$DOWNLOAD_URL" -O "/root/Ducky/client" && chmod +x "/root/Ducky/client"
 
     echo -e "\033[32mDuckyClient 下载完成！\033[0m"
 
@@ -75,8 +75,8 @@ function createConfFile {
 
 function addNewOracleAccount {
     while true; do
-        read -p "输入 'BPG' 完成配置，输入要自定义的名称：" section_name
-        if [[ $section_name == BPG ]]; then
+        read -p "输入 'Y' 完成配置，输入要自定义的名称：" section_name
+        if [[ $section_name == Y ]]; then
             break
         fi
         echo "[$section_name]" >> "/root/Ducky/conf.ini"
@@ -102,14 +102,14 @@ function addNewOracleAccount {
 }
 
 function DuckyClientService {
-    cat << EOF > "/etc/systemd/system/ducky_update.service"
+    cat << EOF > "/etc/systemd/system/duck.service"
 [Unit]
 Description=DuckyClient Service
 
 [Service]
 Type=simple
 WorkingDirectory=/root/Ducky
-ExecStart=/root/Ducky/DuckyClient &
+ExecStart=/root/Ducky/client &
 Restart=always
 RestartSec=30
 
@@ -118,8 +118,8 @@ WantedBy=multi-user.target
 EOF
 
     systemctl daemon-reload
-    systemctl start ducky_update.service
-    systemctl enable ducky_update.service
+    systemctl start ducky.service
+    systemctl enable ducky.service
 
     echo -e "\033[32mDuckyClient 已启动以及设置开机启动！\033[0m"
 
@@ -127,12 +127,12 @@ EOF
         echo "DuckyClient 进程未运行！"
     else
         echo "正在重启 DuckyClient ..."
-        systemctl restart DuckyClient.service
+        systemctl restart ducky.service
     fi
 
     sleep 1s
 
-    if ! pgrep DuckyClient > /dev/null; then
+    if ! pgrep client > /dev/null; then
         echo -e "\033[31mDuckyClient 启动失败！\033[0m"
     else
         echo -e "\033[32mDuckyClient 启动成功！\033[0m"
